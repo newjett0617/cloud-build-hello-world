@@ -1,7 +1,8 @@
 steps:
-  - name: 'gcr.io/cloud-builders/gcloud'
+  - name: 'gcr.io/cloud-builders/docker'
     entrypoint: 'bash'
-    args: [ '-c', 'gcloud builds list > output.file && ls -al && cat output.file' ]
+    args: [ '-c', 'pwd && ls -al && echo ${_PROD_ENV} && ls -al && which docker' ]
+#    args: [ '-c', 'gcloud builds list > output.file && ls -al && cat output.file' ]
 #      - 'ls -al && echo ${_PROD_ENV} && ls -al && which docker'
 #  - name: 'gcr.io/cloud-builders/docker'
 #    args: [ 'build', '-t', 'asia.gcr.io/$PROJECT_ID/cloud-build-hello-world:$TAG_NAME', '.' ]
