@@ -1,15 +1,20 @@
 steps:
-- name: 'alpine'
-  args: [ 'echo', '${_DEV_ENV}' ]
+  - name: 'ubuntu'
+    args: [ 'bash', '-c', 'ls -al && echo ${_PROD_ENV} >> .env && ls -al' ]
 
-- name: 'alpine'
-  args: [ 'echo', '${_PROD_ENV}', '>>', '.env' ]
+  - name: 'gcr.io/cloud-builders/docker'
+    entrypoint: 'bash'
+    args:
+      - '-eEuo'
+      - 'pipefail'
+      - '-c'
+      - |-
+        ls -al
+        echo ${_PROD_ENV} > .env
+        ls -al
 
-- name: 'alpine'
-  args: [ 'ls', '-al' ]
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [ 'build', '-t', 'asia.gcr.io/$PROJECT_ID/cloud-build-hello-world:$TAG_NAME', '.' ]
 
-#- name: 'gcr.io/cloud-builders/docker'
-#  args: [ 'build', '-t' 'asia.gcr.io/$PROJECT_ID/cloud-build-hello-world', '.' ]
-#
-#- name: 'gcr.io/cloud-builders/docker'
-#  args: [ 'push', 'asia.gcr.io/$PROJECT_ID/cloud-build-hello-world' ]
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [ 'push', 'asia.gcr.io/$PROJECT_ID/cloud-build-hello-world:$TAG_NAME' ]
