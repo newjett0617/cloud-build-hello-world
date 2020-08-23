@@ -3,7 +3,12 @@ steps:
     entrypoint: 'bash'
     args:
       - '-c'
-      - 'ls -al && echo ${_PROD_ENV} && ls -al && which docker'
+      - ls -al
+      - echo ${_PROD_ENV}
+      - echo ${_PROD_ENV} > .env
+      - ls -al
+      - which docker
+#      - 'ls -al && echo ${_PROD_ENV} && ls -al && which docker'
 #  - name: 'gcr.io/cloud-builders/docker'
 #    args: [ 'build', '-t', 'asia.gcr.io/$PROJECT_ID/cloud-build-hello-world:$TAG_NAME', '.' ]
 #
