@@ -21,6 +21,8 @@ jobs:
     
     - name: git
       run: |
-        which git;
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        
         git tag -am "Tagging Services for release ${GITHUB_RUN_NUMBER}" v${GITHUB_RUN_NUMBER}
         git push origin v${GITHUB_RUN_NUMBER}
