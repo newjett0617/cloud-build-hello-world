@@ -4,7 +4,7 @@ steps:
     args:
       - "-c"
       - |
-        gsutil cp gs://gludio/gludio-backend.env \
+        gsutil cp gs://gludio/gludio-backend.env ${PWD}/.env \
         ls -al
 #        docker build -t asia.gcr.io/$PROJECT_ID/cloud-build-hello-world:$TAG_NAME .
 
