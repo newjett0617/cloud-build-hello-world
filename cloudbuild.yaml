@@ -1,14 +1,22 @@
 steps:
-  - name: 'alpine'
-    entrypoint: 'sh'
-    args: [ '-c', 'echo $_PROD_ENV > .env && ls -al' ]
-  - name: 'gcr.io/cloud-builders/docker'
-    entrypoint: 'bash'
-    args: [ '-c', 'echo $_PROD_ENV > .env && ls -al && cat .env && env' ]
-#    args: [ '-c', 'gcloud builds list > output.file && ls -al && cat output.file' ]
-#      - 'ls -al && echo ${_PROD_ENV} && ls -al && which docker'
-#  - name: 'gcr.io/cloud-builders/docker'
-#    args: [ 'build', '-t', 'asia.gcr.io/$PROJECT_ID/cloud-build-hello-world:$TAG_NAME', '.' ]
-#
-#  - name: 'gcr.io/cloud-builders/docker'
-#    args: [ 'push', 'asia.gcr.io/$PROJECT_ID/cloud-build-hello-world:$TAG_NAME' ]
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk:alpine"
+    entrypoint: "bash"
+    args:
+      - "-c"
+      - |
+        echo $_PROD_ENV > .env \
+        docker build -t asia.gcr.io/$PROJECT_ID/cloud-build-hello-world:$TAG_NAME .
+
+#  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:alpine'
+#    entrypoint: 'docker'
+#    args:
+#      - build
+#      - -t
+#      - asia.gcr.io/$PROJECT_ID/cloud-build-hello-world:$TAG_NAME
+#      - .
+
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:alpine'
+    entrypoint: 'docker'
+    args:
+      - push
+      - asia.gcr.io/$PROJECT_ID/cloud-build-hello-world:$TAG_NAME
