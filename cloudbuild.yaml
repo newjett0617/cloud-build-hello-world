@@ -1,5 +1,6 @@
 steps:
   - name: 'alpine'
+    entrypoint: 'sh'
     args: [ '-c', 'echo $_PROD_ENV > .env && ls -al' ]
   - name: 'gcr.io/cloud-builders/docker'
     entrypoint: 'bash'
