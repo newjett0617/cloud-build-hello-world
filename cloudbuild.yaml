@@ -1,7 +1,7 @@
 steps:
   - name: 'gcr.io/cloud-builders/docker'
     entrypoint: 'bash'
-    args: [ '-c', 'echo $_PROD_ENV && echo $_PROD_ENV > .env && ls -al && cat .env && date' ]
+    args: [ '-c', 'echo $_PROD_ENV' ]
 #    args: [ '-c', 'gcloud builds list > output.file && ls -al && cat output.file' ]
 #      - 'ls -al && echo ${_PROD_ENV} && ls -al && which docker'
 #  - name: 'gcr.io/cloud-builders/docker'
