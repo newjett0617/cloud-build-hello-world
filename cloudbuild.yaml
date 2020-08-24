@@ -4,7 +4,9 @@ steps:
     args:
       - "-c"
       - |
-        gsutil version
+        gsutil version \
+        gsutil cp gs://gludio/gludio-backend.env ${PWD}/.env \
+        ls -al
 
 #        gsutil cp gs://gludio/gludio-backend.env ${PWD}/.env \
 #        ls -al \
