@@ -4,11 +4,13 @@ steps:
     args:
       - "-c"
       - |
-        gsutil cp gs://gludio/gludio-backend.env ${PWD}/.env \
-        ls -al \
-        pwd
-#        docker build -t asia.gcr.io/$PROJECT_ID/cloud-build-hello-world:$TAG_NAME .
+        gsutil version
 
+#        gsutil cp gs://gludio/gludio-backend.env ${PWD}/.env \
+#        ls -al \
+#        pwd
+#        docker build -t asia.gcr.io/$PROJECT_ID/cloud-build-hello-world:$TAG_NAME .
+#
 #  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:alpine'
 #    entrypoint: 'docker'
 #    args:
@@ -16,7 +18,7 @@ steps:
 #      - -t
 #      - asia.gcr.io/$PROJECT_ID/cloud-build-hello-world:$TAG_NAME
 #      - .
-
+#
 #  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:alpine'
 #    entrypoint: 'docker'
 #    args:
