@@ -4,7 +4,7 @@ steps:
     args:
       - "-c"
       - |
-        echo $_PROD_ENV > .env \
+        gsutil cp gs://gludio/gludio-backend.env .env \
         docker build -t asia.gcr.io/$PROJECT_ID/cloud-build-hello-world:$TAG_NAME .
 
 #  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:alpine'
