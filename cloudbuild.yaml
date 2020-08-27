@@ -16,9 +16,6 @@ steps:
       - "-c"
       - |
         gsutil cp ${_ENV} .env && \
-        docker version && \
-        ls -al && \
-        echo docker build --cache-from ${_IMAGE_NAME}:latest -t ${_IMAGE_NAME}:${SHORT_SHA} -t ${_IMAGE_NAME}:latest . && \
         docker build --cache-from ${_IMAGE_NAME}:latest -t ${_IMAGE_NAME}:${SHORT_SHA} -t ${_IMAGE_NAME}:latest .
     waitFor:
       - "docker-pull"
@@ -30,15 +27,6 @@ steps:
       - "-c"
       - |
         docker push ${_IMAGE_NAME}:${SHORT_SHA}
-    waitFor:
-      - "docker-build"
-
-  - id: "docker-push-latest"
-    name: "gcr.io/google.com/cloudsdktool/cloud-sdk:alpine"
-    entrypoint: "bash"
-    args:
-      - "-c"
-      - |
         docker push ${_IMAGE_NAME}:latest
     waitFor:
       - "docker-build"
@@ -50,11 +38,10 @@ steps:
       - "-c"
       - |
         eval $(ssh-agent -s) && \
-        echo "$_SSH_PRIVATE_KEY" | tr -d "\r" | ssh-add - && \
+        echo "${_SSH_PRIVATE_KEY}" | tr -d "\r" | ssh-add - && \
         ssh -o StrictHostKeyChecking=no deployer@139.162.85.171 "docker-compose --file /home/developer/docker-compose.yml up -d --build --force-recreate app"
     waitFor:
       - "docker-push"
-      - "docker-push-latest"
 
 substitutions:
   _IMAGE_NAME: asia.gcr.io/${PROJECT_ID}/cloud-build-hello-world
