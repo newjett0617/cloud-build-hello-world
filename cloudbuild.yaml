@@ -54,5 +54,5 @@ steps:
       - "docker-push-latest"
 
 substitutions:
-  _IMAGE_NAME: "asia.gcr.io/$PROJECT_ID/cloud-build-hello-world"
-  _ENV: "gs://gludio/gludio-backend.env"
+  _IMAGE_NAME: asia.gcr.io/$PROJECT_ID/cloud-build-hello-world
+  _ENV: gs://gludio/gludio-backend.env
