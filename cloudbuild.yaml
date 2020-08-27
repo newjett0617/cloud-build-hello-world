@@ -1,20 +1,58 @@
 steps:
-  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk:alpine"
+  - id: "docker-pull"
+    name: "gcr.io/google.com/cloudsdktool/cloud-sdk:alpine"
     entrypoint: "bash"
     args:
       - "-c"
       - |
-        gsutil cp gs://gludio/gludio-backend.env .env && \
-        docker build -t asia.gcr.io/$PROJECT_ID/cloud-build-hello-world:$SHORT_SHA . && \
-        docker tag asia.gcr.io/$PROJECT_ID/cloud-build-hello-world:$SHORT_SHA asia.gcr.io/$PROJECT_ID/cloud-build-hello-world:latest
-  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk:alpine"
-    entrypoint: bash
+        docker pull ${_IMAGE_NAME}:latest || exit 0
+    waitFor:
+      - "-"
+
+  - id: "docker-build"
+    name: "gcr.io/google.com/cloudsdktool/cloud-sdk:alpine"
+    entrypoint: "bash"
+    args:
+      - "-c"
+      - |
+        gsutil cp ${_ENV} .env && \
+        docker build --cache-from=${_IMAGE_NAME}:latest --tag=${_IMAGE_NAME}:$SHORT_SHA --tag=${_IMAGE_NAME}:latest .
+    waitFor:
+      - "docker-pull"
+
+  - id: "docker-push"
+    name: "gcr.io/google.com/cloudsdktool/cloud-sdk:alpine"
+    entrypoint: "bash"
+    args:
+      - "-c"
+      - |
+        docker push ${_IMAGE_NAME}:$SHORT_SHA
+    waitFor:
+      - "docker-build"
+
+  - id: "docker-push-latest"
+    name: "gcr.io/google.com/cloudsdktool/cloud-sdk:alpine"
+    entrypoint: "bash"
+    args:
+      - "-c"
+      - |
+        docker push ${_IMAGE_NAME}:latest
+    waitFor:
+      - "docker-build"
+
+  - id: "deploy"
+    name: "gcr.io/google.com/cloudsdktool/cloud-sdk:alpine"
+    entrypoint: "bash"
     args:
       - "-c"
       - |
         eval $(ssh-agent -s) && \
         echo "$_SSH_PRIVATE_KEY" | tr -d "\r" | ssh-add - && \
         ssh -o StrictHostKeyChecking=no deployer@139.162.85.171 "docker-compose --file /home/developer/docker-compose.yml up -d --build --force-recreate app"
-images:
-  - "asia.gcr.io/$PROJECT_ID/cloud-build-hello-world:$SHORT_SHA"
-  - "asia.gcr.io/$PROJECT_ID/cloud-build-hello-world:latest"
+    waitFor:
+      - "docker-push"
+      - "docker-push-latest"
+
+substitutions:
+  _IMAGE_NAME: "asia.gcr.io/$PROJECT_ID/cloud-build-hello-world"
+  _ENV: "gs://gludio/gludio-backend.env"
