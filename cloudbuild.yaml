@@ -5,7 +5,16 @@ steps:
       - "-c"
       - |
         gsutil cp gs://gludio/gludio-backend.env .env && \
-        docker build -t asia.gcr.io/$PROJECT_ID/cloud-build-hello-world .
-
+        docker build -t asia.gcr.io/$PROJECT_ID/cloud-build-hello-world:$SHORT_SHA . && \
+        docker tag asia.gcr.io/$PROJECT_ID/cloud-build-hello-world:$SHORT_SHA asia.gcr.io/$PROJECT_ID/cloud-build-hello-world:latest
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk:alpine"
+    entrypoint: bash
+    args:
+      - "-c"
+      - |
+        eval $(ssh-agent -s) && \
+        echo "$_SSH_PRIVATE_KEY" | tr -d "\r" | ssh-add - && \
+        ssh -o StrictHostKeyChecking=no deployer@139.162.85.171 "docker-compose --file /home/developer/docker-compose.yml up -d --build --force-recreate app"
 images:
-  - 'asia.gcr.io/$PROJECT_ID/cloud-build-hello-world'
+  - "asia.gcr.io/$PROJECT_ID/cloud-build-hello-world:$SHORT_SHA"
+  - "asia.gcr.io/$PROJECT_ID/cloud-build-hello-world:latest"
