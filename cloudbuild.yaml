@@ -37,12 +37,15 @@ steps:
     args:
       - "-c"
       - |
-        eval $(ssh-agent -s) && \
-        echo "${_SSH_PRIVATE_KEY}" | tr -d "\r" | ssh-add - && \
-        ssh -o StrictHostKeyChecking=no deployer@139.162.85.171 "docker-compose up -d --build --force-recreate app"
+        eval $(ssh-agent -s)
+        echo "${_SSH_PRIVATE_KEY}" | tr -d "\r" | ssh-add -
+        ssh -o StrictHostKeyChecking=no deployer@139.162.85.171 CLOUDSDK_PYTHON=/usr/bin/python 'docker-compose down'
+        ssh -o StrictHostKeyChecking=no deployer@139.162.85.171 'if [ ! -z "$(docker images -q asia.gcr.io/kuantark-devops/cloud-build-hello-world:latest)" ]; then docker rmi asia.gcr.io/kuantark-devops/cloud-build-hello-world:latest; fi'
+        ssh -o StrictHostKeyChecking=no deployer@139.162.85.171 CLOUDSDK_PYTHON=/usr/bin/python 'docker-compose up -d && docker-compose ps'
     waitFor:
       - "docker-push"
 
+timeout: 500s
 substitutions:
   _IMAGE_NAME: asia.gcr.io/${PROJECT_ID}/cloud-build-hello-world
   _ENV: gs://gludio/gludio-backend.env
