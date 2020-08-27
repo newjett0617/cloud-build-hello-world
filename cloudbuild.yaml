@@ -39,7 +39,7 @@ steps:
       - |
         eval $(ssh-agent -s) && \
         echo "${_SSH_PRIVATE_KEY}" | tr -d "\r" | ssh-add - && \
-        ssh -o StrictHostKeyChecking=no deployer@139.162.85.171 "docker-compose --file /home/developer/docker-compose.yml up -d --build --force-recreate app"
+        ssh -o StrictHostKeyChecking=no deployer@139.162.85.171 "docker-compose up -d --build --force-recreate app"
     waitFor:
       - "docker-push"
 
