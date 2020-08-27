@@ -16,7 +16,10 @@ steps:
       - "-c"
       - |
         gsutil cp ${_ENV} .env && \
-        docker build --cache-from=${_IMAGE_NAME}:latest --tag=${_IMAGE_NAME}:$SHORT_SHA --tag=${_IMAGE_NAME}:latest .
+        docker version && \
+        ls -al && \
+        echo docker build --cache-from ${_IMAGE_NAME}:latest -t ${_IMAGE_NAME}:${SHORT_SHA} -t ${_IMAGE_NAME}:latest . && \
+        docker build --cache-from ${_IMAGE_NAME}:latest -t ${_IMAGE_NAME}:${SHORT_SHA} -t ${_IMAGE_NAME}:latest .
     waitFor:
       - "docker-pull"
 
@@ -26,7 +29,7 @@ steps:
     args:
       - "-c"
       - |
-        docker push ${_IMAGE_NAME}:$SHORT_SHA
+        docker push ${_IMAGE_NAME}:${SHORT_SHA}
     waitFor:
       - "docker-build"
 
