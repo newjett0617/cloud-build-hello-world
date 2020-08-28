@@ -40,7 +40,7 @@ steps:
         eval $(ssh-agent -s)
         echo "${_SSH_PRIVATE_KEY}" | tr -d "\r" | ssh-add -
         ssh -o StrictHostKeyChecking=no deployer@139.162.85.171 CLOUDSDK_PYTHON=/usr/bin/python 'docker-compose down'
-        ssh -o StrictHostKeyChecking=no deployer@139.162.85.171 'if [ ! -z "$(docker images -q asia.gcr.io/*/cloud-build-hello-world:latest)" ]; then docker rmi $(docker images -q asia.gcr.io/*/cloud-build-hello-world:latest); fi'
+        ssh -o StrictHostKeyChecking=no deployer@139.162.85.171 '[ ! -z "$(docker images -q '"${_IMAGE_NAME}"')" ]; docker rmi $(docker images -q '"${_IMAGE_NAME}"');'
         ssh -o StrictHostKeyChecking=no deployer@139.162.85.171 CLOUDSDK_PYTHON=/usr/bin/python 'docker-compose up -d && docker-compose ps'
     waitFor:
       - "docker-push"
