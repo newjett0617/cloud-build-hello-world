@@ -11,12 +11,10 @@ RUN composer install --ignore-platform-reqs --no-interaction --no-plugins --no-s
 #
 # Application
 #
-FROM newjett0617/alpine-php-fpm-composer:0.0.1
+FROM docker.io/newjett0617/debian-php-apache-composer:7.2
 
 COPY --from=builder --chown=www-data:www-data /app/vendor/ /var/www/html/vendor/
 COPY --chown=www-data:www-data . /var/www/html/
 
-USER www-data
-
-EXPOSE 9000
-CMD [ "php-fpm" ]
+EXPOSE 80
+CMD [ "apache2-foreground" ]
